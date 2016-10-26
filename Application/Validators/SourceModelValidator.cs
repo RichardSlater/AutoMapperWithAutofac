@@ -1,9 +1,9 @@
 ﻿using Application.Models;
 
 namespace Application.Validators {
-    public class SourceModelValidator {
-        public bool Validate(SourceModel model) {
-            return model != null;
+    public class SourceModelValidator : IValidator<SourceModel> {
+        public bool Validate(SourceModel ob) {
+            return ob != null;
         }
     }
 }

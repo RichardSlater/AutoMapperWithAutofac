@@ -58,6 +58,7 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TypeConverters\SourceToDestinationTypeConverter.cs" />
+    <Compile Include="Validators\IValidator.cs" />
     <Compile Include="Validators\SourceModelValidator.cs" />
   </ItemGroup>
   <ItemGroup>
