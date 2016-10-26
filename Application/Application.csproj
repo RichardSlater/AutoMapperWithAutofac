@@ -51,6 +51,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Infrastructure\ModelProfile.cs" />
     <Compile Include="Models\DestinationModel.cs" />
     <Compile Include="Models\SourceModel.cs" />
     <Compile Include="Program.cs" />
