@@ -16,7 +16,7 @@ namespace Tests {
 
         [Fact]
         public void ShouldReturnEqualValuesIfListOfOne() {
-            var converter = CreateConverter(isValid: true);
+            var converter = CreateConverter(true);
             var source = new SourceModel {Items = new[] {"One"}};
             var destination = converter.Convert(source, null, null);
             destination.FirstItem.ShouldEqual("One");
@@ -25,7 +25,7 @@ namespace Tests {
 
         [Fact]
         public void ShouldReturnNullObjectIfNullList() {
-            var converter = CreateConverter(isValid: false);
+            var converter = CreateConverter(false);
             var source = new SourceModel {Items = null};
             var destination = converter.Convert(source, null, null);
             destination.ShouldBeNull();
