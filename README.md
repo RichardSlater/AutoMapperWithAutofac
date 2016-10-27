@@ -1,6 +1,6 @@
 # Configuring AutoMapper to fulfil ITypeConverter<,> constructor dependecies with Autofac
 
-First time working with Autofac to inject AutoMapper's `IMapper` interface into classes that have a object mapping requirement.  I have made some progress, [with a little help][so-33980760], getting the various dependencies added to AutoMapper's register using Assembly Scanning:
+My first time working with Autofac to inject AutoMapper's `IMapper` interface into classes that have an object mapping requirement.  I have made some progress, [with a little help][so-33980760], getting the various dependencies added to AutoMapper's register using Assembly Scanning:
 
 <!-- language: lang-cs -->
 
@@ -23,7 +23,7 @@ First time working with Autofac to inject AutoMapper's `IMapper` interface into 
         return config.CreateMapper();
     }).As<IMapper>();
 
-This works perfectly for an `ITypeConverter<,>` that dosn't have any injected dependencies:
+This works perfectly for an `ITypeConverter<,>` that doesn't have any injected dependencies:
 
 <!-- language: lang-cs -->
 
@@ -65,7 +65,7 @@ The following exception is thrown:
 
 > `Application.TypeConverters.SourceToDestinationTypeConverter` needs to have a constructor with 0 args or only optional args
 
-It seems clear to me that AutoMapper **needs to be told to use Autofac** to fulfil the dependencies however I haven't been able to find out how to tell it to do so.
+It seems clear to me that AutoMapper **needs to be told to use Autofac** to fulfil the dependencies. However, I haven't been able to find out how to tell it to do so.
 
 The full solution is [available on GitHub][github-repo] if further clarification of the error is required.
 
