@@ -1,6 +1,6 @@
 # Configuring AutoMapper to fulfil ITypeConverter<,> constructor dependecies with Autofac
 
-First time working with Autofac to inject AutoMapper's `IMapper` interface into classes that have a object mapping requirement.  I have made some progress getting the various dependencies added to AutoMapper's register using Assembly Scanning:
+First time working with Autofac to inject AutoMapper's `IMapper` interface into classes that have a object mapping requirement.  I have made some progress, [with a little help][so-33980760], getting the various dependencies added to AutoMapper's register using Assembly Scanning:
 
 <!-- language: lang-cs -->
 
@@ -70,3 +70,4 @@ It seems clear to me that AutoMapper **needs to be told to use Autofac** to fulf
 The full solution is [available on GitHub][github-repo] if further clarification of the error is required.
 
   [github-repo]: https://github.com/RichardSlater/AutoMapperWithAutofac
+  [so-33980760]: http://stackoverflow.com/questions/33980760/how-to-inject-automapper-with-autofac
