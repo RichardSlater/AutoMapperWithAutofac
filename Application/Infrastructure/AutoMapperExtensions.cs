@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using Application.Models;
+using Application.Validators;
 using Autofac;
 using AutoMapper;
 
@@ -11,6 +13,7 @@ namespace Application.Infrastructure {
                 .AsImplementedInterfaces();
             builder.RegisterAssemblyTypes(typeof(AutoMapperExtensions).Assembly)
                 .AssignableTo<Profile>().As<Profile>();
+            builder.RegisterType<SourceModelValidator>().As<IValidator<SourceModel>>();
 
             builder.Register(context => {
                 var profiles = context.Resolve<IEnumerable<Profile>>();
@@ -19,10 +22,10 @@ namespace Application.Infrastructure {
                 });
             }).SingleInstance().AutoActivate().AsSelf();
 
-            builder.Register(context => {
-                var componentContext = context.Resolve<IComponentContext>();
-                var config = componentContext.Resolve<MapperConfiguration>();
-                return config.CreateMapper();
+            builder.Register(c => {
+                var context = c.Resolve<IComponentContext>();
+                var config = context.Resolve<MapperConfiguration>();
+                return config.CreateMapper(context.Resolve);
             }).As<IMapper>();
 
             return builder;
