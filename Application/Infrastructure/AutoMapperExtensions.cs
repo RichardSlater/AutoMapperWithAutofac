@@ -25,7 +25,7 @@ namespace Application.Infrastructure {
             builder.Register(c => {
                 var context = c.Resolve<IComponentContext>();
                 var config = context.Resolve<MapperConfiguration>();
-                return config.CreateMapper(context.Resolve);
+                return config.CreateMapper(c.Resolve);
             }).As<IMapper>();
 
             return builder;

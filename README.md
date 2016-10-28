@@ -1,5 +1,7 @@
 # Configuring AutoMapper to fulfil ITypeConverter<,> constructor dependecies with Autofac
 
+## The Question
+
 My first time working with Autofac to inject AutoMapper's `IMapper` interface into classes that have an object mapping requirement.  I have made some progress, [with a little help][so-33980760], getting the various dependencies added to AutoMapper's register using Assembly Scanning:
 
 <!-- language: lang-cs -->
@@ -69,6 +71,39 @@ It seems clear to me that AutoMapper **needs to be told to use Autofac** to fulf
 
 The full solution is [available on GitHub][github-repo] if further clarification of the error is required.  This question was [asked on StackOverflow][so-40293597] on 2016-10-27.
 
+## The Answer
+
+Travis Illig has provided a [hollistic answer to the question][so-40306029] which I am marking as the answer as it answers the question in a broad and generic way.  However, I also wanted to document the **specific solution** to my question.
+
+You need to be fairly careful of how you wire up the dependency resolver to AutoMapper, to be precice you must resolve the component context within the closure - failing to do so will result in the context being disposed before AutoMapper ever gets a chance to resolve it's dependencies.
+
+### Solution #1
+
+In my example, the following code block that registers the `IMapper` using the previously defined `MapperConfiguration`:
+
+<!-- language: lang-cs -->
+
+    builder.Register(c => {
+        var context = c.Resolve<IComponentContext>();
+        var config = context.Resolve<MapperConfiguration>();
+        return config.CreateMapper();
+    }).As<IMapper>();
+
+Can be trivially adapted by using an overload of `MapperConfiguration.CreateMapper()` that accepts a `Func<Type, object>` as an argument named `serviceCtor` that AutoMapper will use to construct dependencies:
+
+<!-- language: lang-cs -->
+
+    builder.Register(c => {
+        var context = c.Resolve<IComponentContext>();
+        var config = context.Resolve<MapperConfiguration>();
+        return config.CreateMapper(context.Resolve);
+    }).As<IMapper>();
+
+It's essential that the Component Context `context` is used as it is declared within the closure, attempting to use `c` will result in the following exception:
+
+> This resolve operation has already ended. When registering components using lambdas, the `IComponentContext` '`c`' parameter to the lambda cannot be stored. Instead, either resolve `IComponentContext` again from '`c`', or resolve a `Func<>`` based factory to create subsequent components from.
+
   [github-repo]: https://github.com/RichardSlater/AutoMapperWithAutofac
   [so-33980760]: http://stackoverflow.com/questions/33980760/how-to-inject-automapper-with-autofac
   [so-40293597]: http://stackoverflow.com/questions/40293597/configuring-automapper-to-fulfil-itypeconverter-constructor-dependecies-with
+  [so-40306029]: http://stackoverflow.com/a/40306029/74302
