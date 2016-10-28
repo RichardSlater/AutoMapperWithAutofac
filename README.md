@@ -40,7 +40,7 @@ This works perfectly for an `ITypeConverter<,>` that doesn't have any injected d
         }
     }
 
-However from the moment I add a dependency, in this contrived example, n validator:
+However from the moment I add a dependency, in this contrived example, a validator:
 
 <!-- language: lang-cs -->
 
@@ -67,7 +67,7 @@ The following exception is thrown:
 
 It seems clear to me that AutoMapper **needs to be told to use Autofac** to fulfil the dependencies. However, I haven't been able to find out how to tell it to do so.
 
-The full solution is [available on GitHub][github-repo] if further clarification of the error is required.  This question was [asked on StackOverflow][so-40293597] on 2016-10-27. 
+The full solution is [available on GitHub][github-repo] if further clarification of the error is required.  This question was [asked on StackOverflow][so-40293597] on 2016-10-27.
 
   [github-repo]: https://github.com/RichardSlater/AutoMapperWithAutofac
   [so-33980760]: http://stackoverflow.com/questions/33980760/how-to-inject-automapper-with-autofac
