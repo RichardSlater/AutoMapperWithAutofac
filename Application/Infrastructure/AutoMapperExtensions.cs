@@ -15,17 +15,19 @@ namespace Application.Infrastructure {
                 .AssignableTo<Profile>().As<Profile>();
             builder.RegisterType<SourceModelValidator>().As<IValidator<SourceModel>>();
 
-            builder.Register(context => {
-                var profiles = context.Resolve<IEnumerable<Profile>>();
+            builder.Register(c => {
+                var profiles = c.Resolve<IEnumerable<Profile>>();
+                var context = c.Resolve<IComponentContext>();
                 return new MapperConfiguration(x => {
-                    foreach (var profile in profiles) x.AddProfile(profile);                    
+                    foreach (var profile in profiles) x.AddProfile(profile);
+                    x.ConstructServicesUsing(context.Resolve);                   
                 });
             }).SingleInstance().AsSelf();
 
             builder.Register(c => {
                 var context = c.Resolve<IComponentContext>();
                 var config = context.Resolve<MapperConfiguration>();
-                return config.CreateMapper(context.Resolve);
+                return config.CreateMapper();
             }).As<IMapper>();
 
             return builder;

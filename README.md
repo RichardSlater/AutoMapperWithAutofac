@@ -75,7 +75,7 @@ The full solution is [available on GitHub][github-repo] if further clarification
 
 Travis Illig has provided a [hollistic answer to the question][so-40306029] which I am marking as the answer as it answers the question in a broad and generic way.  However, I also wanted to document the **specific solution** to my question.
 
-You need to be fairly careful of how you wire up the dependency resolver to AutoMapper, to be precice you must resolve the component context within the closure - failing to do so will result in the context being disposed before AutoMapper ever gets a chance to resolve it's dependencies.
+You need to be fairly careful of how you wire up the dependency resolver to AutoMapper, to be precise you must resolve the component context within the closure - failing to do so will result in the context being disposed before AutoMapper ever gets a chance to resolve it's dependencies.
 
 ### Solution #1
 
@@ -101,7 +101,31 @@ Can be trivially adapted by using an overload of `MapperConfiguration.CreateMapp
 
 It's essential that the Component Context `context` is used as it is declared within the closure, attempting to use `c` will result in the following exception:
 
-> This resolve operation has already ended. When registering components using lambdas, the `IComponentContext` '`c`' parameter to the lambda cannot be stored. Instead, either resolve `IComponentContext` again from '`c`', or resolve a `Func<>`` based factory to create subsequent components from.
+> This resolve operation has already ended. When registering components using lambdas, the `IComponentContext` '`c`' parameter to the lambda cannot be stored. Instead, either resolve `IComponentContext` again from '`c`', or resolve a `Func<>` based factory to create subsequent components from.
+
+### Solution #2
+
+Using a very similar technique to Solution #1 it is possible to use the `IMapperConfiguration.ConstructServiceUsing(Func<Type, object>)` which provides for more readable code.  The original code:
+
+    builder.Register(c => {
+        var profiles = c.Resolve<IEnumerable<Profile>>();
+        return new MapperConfiguration(x => {
+            foreach (var profile in profiles) x.AddProfile(profile);           
+        });
+    }).SingleInstance().AsSelf();
+
+And the updated code with the call to `x.ConstructServiceUsing(constructor)`:
+
+    builder.Register(c => {
+        var profiles = c.Resolve<IEnumerable<Profile>>();
+        var context = c.Resolve<IComponentContext>();
+        return new MapperConfiguration(x => {
+            foreach (var profile in profiles) x.AddProfile(profile);
+            x.ConstructServicesUsing(context.Resolve);                   
+        });
+    }).SingleInstance().AsSelf();
+
+Again if you fail to create an instance of `IComponentContext` within the closure / lambda the context will have been disposed before the Mapper creates the dependencies.
 
   [github-repo]: https://github.com/RichardSlater/AutoMapperWithAutofac
   [so-33980760]: http://stackoverflow.com/questions/33980760/how-to-inject-automapper-with-autofac
