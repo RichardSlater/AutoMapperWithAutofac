@@ -18,9 +18,9 @@ namespace Application.Infrastructure {
             builder.Register(context => {
                 var profiles = context.Resolve<IEnumerable<Profile>>();
                 return new MapperConfiguration(x => {
-                    foreach (var profile in profiles) x.AddProfile(profile);
+                    foreach (var profile in profiles) x.AddProfile(profile);                    
                 });
-            }).SingleInstance().AutoActivate().AsSelf();
+            }).SingleInstance().AsSelf();
 
             builder.Register(c => {
                 var context = c.Resolve<IComponentContext>();
